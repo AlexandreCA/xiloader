@@ -79,7 +79,7 @@ namespace xiloader
         struct addrinfo* addr = NULL;
         if (getaddrinfo(globals::g_ServerAddress.c_str(), port, &hints, &addr))
         {
-            xiloader::console::output(xiloader::color::error, "Impossible d'obtenir les informations du serveur distant.");
+            xiloader::console::output(xiloader::color::error, "Failed to obtain remote server information.");
             return 0;
         }
 
@@ -90,7 +90,7 @@ namespace xiloader
             sock->s = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
             if (sock->s == INVALID_SOCKET)
             {
-                xiloader::console::output(xiloader::color::error, "Echec de la creation du socket.");
+                xiloader::console::output(xiloader::color::error, "Failed to create socket.");
 
                 freeaddrinfo(addr);
                 return 0;
@@ -99,14 +99,14 @@ namespace xiloader
             /* Attempt to connect to the server.. */
             if (connect(sock->s, ptr->ai_addr, ptr->ai_addrlen) == SOCKET_ERROR)
             {
-                xiloader::console::output(xiloader::color::error, "Echec de la connexion au serveur!");
+                xiloader::console::output(xiloader::color::error, "Failed to connect to server!");
 
                 closesocket(sock->s);
                 sock->s = INVALID_SOCKET;
                 return 0;
             }
 
-            xiloader::console::output(xiloader::color::info, "Connecte au serveur!");
+            xiloader::console::output(xiloader::color::info, "Connected to server!");
             break;
         }
 
@@ -148,19 +148,19 @@ namespace xiloader
         struct addrinfo* addr = NULL;
         if (getaddrinfo(globals::g_ServerAddress.c_str(), port, &hints, &addr))
         {
-            xiloader::console::output(xiloader::color::error, "Impossible d'obtenir les informations du serveur distant.");
+            xiloader::console::output(xiloader::color::error, "Failed to obtain remote server information.");
             return 0;
         }
 
         if ((mbedtls_net_connect(&sslState::server_fd, globals::g_ServerAddress.c_str(), port, MBEDTLS_NET_PROTO_TCP)) != 0)
         {
-            xiloader::console::output(xiloader::color::error, "mbedtls_net_connect a echoue.");
+            xiloader::console::output(xiloader::color::error, "mbedtls_net_connect failed.");
             return 0;
         }
 
         if (mbedtls_ssl_config_defaults(&sslState::conf, MBEDTLS_SSL_IS_CLIENT, MBEDTLS_SSL_TRANSPORT_STREAM, MBEDTLS_SSL_PRESET_DEFAULT) != 0)
         {
-            xiloader::console::output(xiloader::color::error, "mbedtls_ssl_config_defaults a echoue.");
+            xiloader::console::output(xiloader::color::error, "mbedtls_ssl_config_defaults failed.");
             return 0;
         }
 
@@ -183,7 +183,7 @@ namespace xiloader
         {
             if (ret != MBEDTLS_ERR_SSL_WANT_READ && ret != MBEDTLS_ERR_SSL_WANT_WRITE)
             {
-                xiloader::console::output(xiloader::color::error, "mbedtls_ssl_handshake renvoye -0x%x", (unsigned int)-ret);
+                xiloader::console::output(xiloader::color::error, "mbedtls_ssl_handshake returned -0x%x", (unsigned int)-ret);
                 return 0;
             }
         }
@@ -196,12 +196,12 @@ namespace xiloader
 
             mbedtls_x509_crt_verify_info(vrfy_buf, sizeof(vrfy_buf), "", flags);
 
-            xiloader::console::output(xiloader::color::warning, "Avertissements sur les certificats de serveur distant:", vrfy_buf);
+            xiloader::console::output(xiloader::color::warning, "Remote server certificate warnings:", vrfy_buf);
             xiloader::console::output(xiloader::color::warning, "%s", vrfy_buf);
         }
         else
         {
-            xiloader::console::output(xiloader::color::info, "Serveur distant (%s) le certificat est valide.", globals::g_ServerAddress.c_str());
+            xiloader::console::output(xiloader::color::info, "Remote server (%s) certificate is valid.", globals::g_ServerAddress.c_str());
         }
 
         sockaddr clientAddr  = {};
@@ -239,7 +239,7 @@ namespace xiloader
         struct addrinfo* addr = NULL;
         if (getaddrinfo(NULL, port, &hints, &addr))
         {
-            xiloader::console::output(xiloader::color::error, "Impossible d'obtenir les informations d'adresse locale.");
+            xiloader::console::output(xiloader::color::error, "Failed to obtain local address information.");
             return false;
         }
 
@@ -247,7 +247,7 @@ namespace xiloader
         *sock = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
         if (*sock == INVALID_SOCKET)
         {
-            xiloader::console::output(xiloader::color::error, "Echec de la création du socket d'ecoute.");
+            xiloader::console::output(xiloader::color::error, "Failed to create listening socket.");
 
             freeaddrinfo(addr);
             return false;
@@ -256,7 +256,7 @@ namespace xiloader
         /* Set socket option on internal server to allow sharing the port for multibox users */
         if (setsockopt(*sock, SOL_SOCKET, SO_REUSEADDR, (char*)(&[] { return TRUE; }), sizeof(BOOL)) == SOCKET_ERROR)
         {
-            xiloader::console::output(xiloader::color::error, "Impossible de definir l'option d'adresse reutilisable sur le socket. %d", WSAGetLastError());
+            xiloader::console::output(xiloader::color::error, "Failed to set reusable address option on socket / Impossible d'obtenir les informations d'adresse locale. %d", WSAGetLastError());
 
             freeaddrinfo(addr);
             return false;
@@ -265,7 +265,7 @@ namespace xiloader
         /* Bind to the local address.. */
         if (bind(*sock, addr->ai_addr, (int)addr->ai_addrlen) == SOCKET_ERROR)
         {
-            xiloader::console::output(xiloader::color::error, "Echec de la liaison au socket d'ecoute.");
+            xiloader::console::output(xiloader::color::error, "Failed to bind to listening socket / Echec de la création du socket d'ecoute..");
 
             freeaddrinfo(addr);
             closesocket(*sock);
@@ -280,7 +280,7 @@ namespace xiloader
         {
             if (listen(*sock, SOMAXCONN) == SOCKET_ERROR)
             {
-                xiloader::console::output(xiloader::color::error, "Impossible d'ecouter les connexions.");
+                xiloader::console::output(xiloader::color::error, "Failed to listen for connections / Impossible d'ecouter les connexions.");
 
                 closesocket(*sock);
                 *sock = INVALID_SOCKET;
@@ -343,18 +343,18 @@ namespace xiloader
         /* Determine if we should auto-login.. */
         bool bUseAutoLogin = !globals::g_Username.empty() && !globals::g_Password.empty() && bFirstLogin;
         if (bUseAutoLogin)
-            xiloader::console::output(xiloader::color::lightgreen, "Connexion automatique activee!");
+            xiloader::console::output(xiloader::color::lightgreen, "Autologin activated! / Connexion automatique activee!");
 
         // TODO: kill all labels and gotos
         if (!bUseAutoLogin)
         {
             xiloader::console::output("==========================================================");
-            xiloader::console::output("Que souhaitez-vous faire ?");
-            xiloader::console::output("   1.) Se connecter");
-            xiloader::console::output("   2.) Creer un nouveau compte");
-            xiloader::console::output("   3.) Changer le mot de passe du compte");
+            xiloader::console::output("What would you like to do? / Que souhaitez-vous faire?");
+            xiloader::console::output("   1.) Login / Se connecter");
+            xiloader::console::output("   2.) Create New Account / Creer un nouveau compte");
+            xiloader::console::output("   3.) Change Account Password / Changer le mot de passe du compte");
             xiloader::console::output("==========================================================");
-            printf("\nEntrer une selection: ");
+            printf("\nEnter a selection: ");
 
             std::string input;
             std::cin >> input;
@@ -364,11 +364,11 @@ namespace xiloader
             if (input == "1" || input == "3")
             {
                 if (input == "3")
-                    xiloader::console::output("Avant de reinitialiser votre mot de passe, vérifiez d’abord les détails de votre compte.");
-                xiloader::console::output("Veuillez saisir vos informations de connexion.");
-                std::cout << "\nNom d'utilisateur: ";
+                    xiloader::console::output("Before resetting your password, first verify your account details. / Avant de reinitialiser votre mot de passe, vérifiez d’abord les détails de votre compte.");
+                xiloader::console::output("Please enter your login information. / Veuillez saisir vos informations de connexion.");
+                std::cout << "\nUsername: / Nom d'utilisateur: ";
                 std::cin >> globals::g_Username;
-                std::cout << "Mot de passe: ";
+                std::cout << "Password: / Mot de passe:";
                 globals::g_Password.clear();
 
                 /* Read in each char and instead of displaying it. display a "*" */
@@ -400,17 +400,17 @@ namespace xiloader
                     std::string confirmed_password = "";
                     do
                     {
-                        std::cout << "Entrez un nouveau mot de passe (6 à 32 caractères) : ";
+                        std::cout << "Enter new password (6-32 characters): / Entrez un nouveau mot de passe (6 à 32 caractères):";
                         confirmed_password = "";
                         new_password       = "";
                         std::cin >> new_password;
-                        std::cout << "Répéter le mot de passe           : ";
+                        std::cout << "Repeat Password / Répéter le mot de passe         : ";
                         std::cin >> confirmed_password;
                         std::cout << std::endl;
 
                         if (new_password != confirmed_password)
                         {
-                            xiloader::console::output(xiloader::color::error, "Passwords did not match! Please try again.");
+                            xiloader::console::output(xiloader::color::error, "Passwords did not match! Please try again / Les mots de passe ne correspondent pas! Veuillez réessayer.");
                         }
                     } while (new_password != confirmed_password);
                     new_password = confirmed_password;
@@ -421,13 +421,13 @@ namespace xiloader
             else if (input == "2")
             {
             create_account:
-                xiloader::console::output("Veuillez saisir vos informations de connexion souhaitées.");
-                std::cout << "\nNom d'utilisateur (3 à 15 caractères) : ";
+                xiloader::console::output("Please enter your desired login information. / Veuillez saisir vos informations de connexion souhaitées.");
+                std::cout << "\nUsername (3-15 characters): / Nom d'utilisateur (3 à 15 caractères):";
                 std::cin >> globals::g_Username;
-                std::cout << "Mot de passe (6-32 caractères) : ";
+                std::cout << "Password (6-32 characters): / Mot de passe (6-32 caractères): ";
                 globals::g_Password.clear();
                 std::cin >> globals::g_Password;
-                std::cout << "Répéter le mot de passe           : ";
+                std::cout << "Repeat Password / Répéter le mot de passe        : ";
                 std::cin >> input;
                 std::cout << std::endl;
 
@@ -435,7 +435,7 @@ namespace xiloader
 
                 if (input != globals::g_Password)
                 {
-                    xiloader::console::output(xiloader::color::error, "Les mots de passe ne correspondent pas! Veuillez réessayer.");
+                    xiloader::console::output(xiloader::color::error, "Passwords did not match! Please try again. / Les mots de passe ne correspondent pas! Veuillez réessayer.");
                     goto create_account;
                 }
 
@@ -483,7 +483,7 @@ namespace xiloader
         {
             case 0x0001: // Success (Login)
             {
-                xiloader::console::output(xiloader::color::success, "Connecte avec succes en tant que %s!", globals::g_Username.c_str());
+                xiloader::console::output(xiloader::color::success, "Successfully logged in as / Connecte avec succes en tant que %s!", globals::g_Username.c_str());
 
                 sock->AccountId = ref<UINT32>(recvBuffer, 1);
                 std::memcpy(&globals::g_SessionHash, recvBuffer + 5, sizeof(globals::g_SessionHash));
@@ -495,28 +495,28 @@ namespace xiloader
             }
             case 0x0002: // Error (Login)
             {
-                xiloader::console::output(xiloader::color::error, "Impossible de se connecter. Nom d'utilisateur ou mot de passe non valide.");
+                xiloader::console::output(xiloader::color::error, "Failed to login. Invalid username or password. / Impossible de se connecter. Nom d'utilisateur ou mot de passe non valide.");
                 closesocket(sock->s);
                 sock->s = INVALID_SOCKET;
                 return false;
             }
             case 0x0003: // Success (Create Account)
             {
-                xiloader::console::output(xiloader::color::success, "Compte cree avec succes !");
+                xiloader::console::output(xiloader::color::success, "Account successfully created! / Compte cree avec succes!");
                 closesocket(sock->s);
                 sock->s = INVALID_SOCKET;
                 return false;
             }
             case 0x0004: // Error (Create Account)
             {
-                xiloader::console::output(xiloader::color::error, "Impossible de creer le nouveau compte. Le nom d'utilisateur est deja utilise.");
+                xiloader::console::output(xiloader::color::error, "Failed to create the new account. Username already taken. / Impossible de creer le nouveau compte. Le nom d'utilisateur est deja utilise.");
                 closesocket(sock->s);
                 sock->s = INVALID_SOCKET;
                 return false;
             }
             case 0x0006: // Success (Changed Password)
             {
-                xiloader::console::output(xiloader::color::success, "Mot de passe mis à jour avec succes !");
+                xiloader::console::output(xiloader::color::success, "Password updated successfully! / Mot de passe mis à jour avec succes!");
                 std::cout << std::endl;
                 globals::g_Password.clear();
                 closesocket(sock->s);
@@ -525,7 +525,7 @@ namespace xiloader
             }
             case 0x0007: // Error (Changed Password)
             {
-                xiloader::console::output(xiloader::color::error, "Impossible de changer le mot de passe.");
+                xiloader::console::output(xiloader::color::error, "Failed to change password. / Impossible de changer le mot de passe.");
                 std::cout << std::endl;
                 globals::g_Password.clear();
                 closesocket(sock->s);
@@ -537,14 +537,14 @@ namespace xiloader
 
             case 0x000A:
             {
-                xiloader::console::output(xiloader::color::error, "Impossible de se connecter. Compte déjà connecté.");
+                xiloader::console::output(xiloader::color::error, "Failed to login. Account already logged in. / Impossible de se connecter. Compte déjà connecté. ");
                 closesocket(sock->s);
                 sock->s = INVALID_SOCKET;
                 return false;
             }
             case 0x000B:
             {
-                xiloader::console::output(xiloader::color::error, "Échec de la connexion. La version attendue de xiloader ne correspond pas ; vérifiez auprès de votre fournisseur.");
+                xiloader::console::output(xiloader::color::error, "Failed to login. Expected xiloader version mismatch; check with your provider. / Echec de la connexion. La version attendue de xiloader ne correspond pas ; verifiez auprès de votre fournisseur.");
                 closesocket(sock->s);
                 sock->s = INVALID_SOCKET;
                 return false;
@@ -586,7 +586,7 @@ namespace xiloader
             closesocket(sock->s);
             sock->s = INVALID_SOCKET;
 
-            xiloader::console::output("Echec de l'envoi du hachage de session pour les donnees au serveur; déconnexion!");
+            xiloader::console::output("Failed to send session hash for data to server; disconnecting! / Echec de l'envoi du hachage de session pour les donnees au serveur; deconnexion!");
             return 0;
         }
         memset(sendBuffer, 0, 28);
@@ -615,7 +615,7 @@ namespace xiloader
                 memcpy(sendBuffer + 0x05, &sock->ServerAddress, 4);
                 memcpy(sendBuffer + 12, globals::g_SessionHash, 16);
 
-                xiloader::console::output(xiloader::color::warning, "Envoi de l'identifiant du compte.");
+                xiloader::console::output(xiloader::color::warning, "Sending account id.. / Envoi de l'identifiant du compte..");
                 sendSize = 28;
                 break;
 
@@ -623,12 +623,12 @@ namespace xiloader
             case 0x0015:
                 memcpy(sendBuffer, (char*)"\xA2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x58\xE0\x5D\xAD\x00\x00\x00\x00", 25);
 
-                xiloader::console::output(xiloader::color::warning, "Envoi de la cle.");
+                xiloader::console::output(xiloader::color::warning, "Sending key.. / Envoi de la cle..");
                 sendSize = 28;
                 break;
 
             case 0x0003:
-                xiloader::console::output(xiloader::color::warning, "Reception de la liste des caracteres.");
+                xiloader::console::output(xiloader::color::warning, "Receiving character list.. / Reception de la liste des caracteres..");
                 for (auto x = 0; x < recvBuffer[1]; x++)
                 {
                     globals::g_CharacterList[0x00 + (x * 0x68)] = 1;
@@ -656,7 +656,7 @@ namespace xiloader
                 closesocket(sock->s);
                 sock->s = INVALID_SOCKET;
 
-                xiloader::console::output("Connexion au serveur effectuee; déconnexion!");
+                xiloader::console::output("Server connection done; disconnecting! / Connexion au serveur effectuee; deconnexion!");
                 return 0;
             }
 
@@ -688,7 +688,7 @@ namespace xiloader
             result = recv(client, (char*)recvBuffer, sizeof(recvBuffer), 0);
             if (result <= 0)
             {
-                xiloader::console::output(xiloader::color::error, "La reception du client a echoue: %d", WSAGetLastError());
+                xiloader::console::output(xiloader::color::error, "Client recv failed: / La reception du client a echoue: %d", WSAGetLastError());
                 break;
             }
 
@@ -719,7 +719,7 @@ namespace xiloader
             /* Echo back the buffer to the server.. */
             if (send(client, (char*)recvBuffer, result, 0) == SOCKET_ERROR)
             {
-                xiloader::console::output(xiloader::color::error, "L'envoi du client a échoue: %d", WSAGetLastError());
+                xiloader::console::output(xiloader::color::error, "Client send failed: / L'envoi du client a échoue: %d", WSAGetLastError());
                 break;
             }
 
@@ -732,7 +732,7 @@ namespace xiloader
 
         /* Shutdown the client socket.. */
         if (shutdown(client, SD_SEND) == SOCKET_ERROR)
-            xiloader::console::output(xiloader::color::error, "L'arret du client a echoue: %d", WSAGetLastError());
+            xiloader::console::output(xiloader::color::error, "Client shutdown failed: / L'arret du client a echoue: %d", WSAGetLastError());
         closesocket(client);
 
         return 0;
@@ -780,7 +780,7 @@ namespace xiloader
             /* Attempt to accept incoming connections.. */
             if ((client = accept(sock, NULL, NULL)) == INVALID_SOCKET)
             {
-                xiloader::console::output(xiloader::color::error, "Acceptation echouee: %d", WSAGetLastError());
+                xiloader::console::output(xiloader::color::error, "Accept failed: / Acceptation echouee: %d", WSAGetLastError());
 
                 closesocket(sock);
                 return 1;
