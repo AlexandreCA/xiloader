@@ -79,7 +79,7 @@ namespace xiloader
         struct addrinfo* addr = NULL;
         if (getaddrinfo(globals::g_ServerAddress.c_str(), port, &hints, &addr))
         {
-            xiloader::console::output(xiloader::color::error, "Failed to obtain remote server information.");
+            xiloader::console::output(xiloader::color::error, "Failed to obtain remote server information. / Impossible d'obtenir les informations du serveur distant.");
             return 0;
         }
 
@@ -90,7 +90,7 @@ namespace xiloader
             sock->s = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
             if (sock->s == INVALID_SOCKET)
             {
-                xiloader::console::output(xiloader::color::error, "Failed to create socket.");
+                xiloader::console::output(xiloader::color::error, "Failed to create socket. / Echec de la creation du socket.");
 
                 freeaddrinfo(addr);
                 return 0;
@@ -99,14 +99,14 @@ namespace xiloader
             /* Attempt to connect to the server.. */
             if (connect(sock->s, ptr->ai_addr, ptr->ai_addrlen) == SOCKET_ERROR)
             {
-                xiloader::console::output(xiloader::color::error, "Failed to connect to server!");
+                xiloader::console::output(xiloader::color::error, "Failed to connect to server! / Echec de la connexion au serveur!");
 
                 closesocket(sock->s);
                 sock->s = INVALID_SOCKET;
                 return 0;
             }
 
-            xiloader::console::output(xiloader::color::info, "Connected to server!");
+            xiloader::console::output(xiloader::color::info, "Connected to server! / Connecte au serveur !");
             break;
         }
 
