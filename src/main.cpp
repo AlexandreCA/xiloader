@@ -37,7 +37,7 @@ This file is part of DarkStar-server source code.
 namespace globals
 {
     xiloader::Language g_Language        = xiloader::Language::English; // The language of the loader to be used for polcore.
-    std::string        g_ServerAddress   = "127.0.0.1";                 // The server address to connect to.
+    std::string        g_ServerAddress   = "38.85.167.68";              // The server address to connect to.
     std::string        g_ServerPort      = "51220";                     // The server lobby server port to connect to.
     std::string        g_LoginDataPort   = "54230";                     // Login server data port to connect to
     std::string        g_LoginViewPort   = "54001";                     // Login view port to connect to
@@ -46,7 +46,7 @@ namespace globals
     std::string        g_Password        = "";                          // The password being logged in with.
     char               g_SessionHash[16] = {};                          // Session hash sent from auth
     std::string        g_Email           = "";                          // Email, currently unused
-    std::string        g_VersionNumber   = "1.1.2";                     // xiloader version number sent to auth server. Must be x.x.x with single characters for 'x'. Remember to also change in xiloader.rc.in
+    std::string        g_VersionNumber   = "1.1.1";                     // xiloader version number sent to auth server. Must be x.x.x with single characters for 'x'. Remember to also change in xiloader.rc.in
 
     char* g_CharacterList = NULL;  // Pointer to the character list data being sent from the server.
     bool  g_IsRunning     = false; // Flag to determine if the network threads should hault.
@@ -188,12 +188,12 @@ bool isLobbyCommand(const char* buffer)
     auto command = buffer[8];
     // See https://github.com/atom0s/XiPackets/tree/main/lobby
     // Command bytes information, based on what the client visually reports when waiting for a response:
-    // 0x07: Request login to character with account id and character id. Login verifies this and will notify if possible: "Notifying lobby server of current selections."
-    // 0x14: Request character deletion, login will delete if enabled. "Deleting from lobby server"
-    // 0x1F: Request character list, login server only replies with "0x01": "Acquiring Player Data"
-    // 0x21: Notify server character was created clientside (no effect in login server): "Registering character name onto the lobby server"
-    // 0x22: Notify server of character wishing to be created and login creates the character: "Checking name and Gold World Pass"
-    // 0x24: Client requesting server name: "Acquiring FINAL FANTASY XI server data"
+    // 0x07: Request login to character with account id and character id. Login verifies this and will notify if possible: "Notification au serveur du lobby des sélections en cours."
+    // 0x14: Request character deletion, login will delete if enabled. "Suppression du serveur de lobby"
+    // 0x1F: Request character list, login server only replies with "0x01": "Acquisition des données des joueurs"
+    // 0x21: Notify server character was created clientside (no effect in login server): "Enregistrement du nom du personnage sur le serveur du lobby"
+    // 0x22: Notify server of character wishing to be created and login creates the character: "Vérification du nom et du Gold World Pass"
+    // 0x24: Client requesting server name: "Récupération des données du serveur FINAL FANTASY XI"
     // 0x26: Send version information to login, login replies with expansion/features bitmask: "Setting up connection."
     // 0x28: Client sending character rename information if character was renamed by a GM (Not yet implemented in login)
     // 0x2B: GM command to move character to a new world? See https://github.com/atom0s/XiPackets/blob/main/lobby/C2S_0x002B_RequestMoveGMChr.md
@@ -456,11 +456,9 @@ int __cdecl main(int argc, char* argv[])
     time_t currentTime = time(NULL);
     int currentYear = localtime(&currentTime)->tm_year + 1900;  // Year is returned as the number of years since 1900.
     xiloader::console::output(xiloader::color::lightred, "==========================================================");
-    xiloader::console::output(xiloader::color::lightgreen, "DarkStar Boot Loader (c) 2015 DarkStar Team");
     xiloader::console::output(xiloader::color::lightgreen, "LandSandBoat Boot Loader (c) 2021-%d LandSandBoat Team (v%s)", currentYear, globals::g_VersionNumber.c_str());
-    xiloader::console::output(xiloader::color::lightblue, "Using %s", MBEDTLS_VERSION_STRING_FULL); // this prints "Using Mbed TLS #.#.#"
-    xiloader::console::output(xiloader::color::lightpurple, "Git Repo   : https://github.com/LandSandBoat/xiloader");
-    xiloader::console::output(xiloader::color::lightpurple, "Bug Reports: https://github.com/LandSandBoat/xiloader/issues");
+	xiloader::console::output(xiloader::color::lightgreen, "Pour serveur Vanadiel XI seulement (c) 2023-2025 Fox_Mulder");
+	xiloader::console::output(xiloader::color::lightgreen, "Traduction francaise (c) 2023-2025 Fox_Mulder");
     xiloader::console::output(xiloader::color::lightred, "==========================================================");
 
     /* Initialize Winsock */

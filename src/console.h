@@ -90,8 +90,6 @@ namespace xiloader
          */
         static void visible(bool visible);
 
-    public:
-
         /**
          * @brief Prints a text fragment with the specified color to the console.
          * 
@@ -99,6 +97,8 @@ namespace xiloader
          * @param message   The fragment to print.
          */
         static void print(xiloader::color c, std::string const& message);
+
+    public:
 
         /**
          * @brief Prints the given message to the console.
@@ -112,7 +112,15 @@ namespace xiloader
             output(xiloader::color::white, format, args...);
         }
 
-        static std::string getTimestamp()
+        /**
+         * @brief Prints the given message to the console with the specific color.
+         *
+         * @param c         The color to print the message with.
+         * @param format    The format of the message to print.
+         * @param args      The arguments to fill the format.
+         */
+        template<typename... Args>
+        static void output(xiloader::color c, char const* format, Args... args)
         {
             /* Get the current timestamp */
             ::__time32_t rawtime;
@@ -125,22 +133,8 @@ namespace xiloader
             char timestamp[256];
             ::strftime(timestamp, sizeof timestamp, "[%m/%d/%y %H:%M:%S] ", &timeinfo);
 
-            return timestamp;
-        }
-        /**
-         * @brief Prints the given message to the console with the specific color.
-         *
-         * @param c         The color to print the message with.
-         * @param format    The format of the message to print.
-         * @param args      The arguments to fill the format.
-         */
-        template<typename... Args>
-        static void output(xiloader::color c, char const* format, Args... args)
-        {
-            std::string timestamp = getTimestamp();
-
             /* Output the timestamp */
-            print(xiloader::color::lightyelllow, timestamp.c_str());
+            print(xiloader::color::lightyelllow, timestamp);
 
             /* Parse the incoming message */
             char buffer[1024];
