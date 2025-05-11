@@ -2,6 +2,7 @@
 ===========================================================================
 
 Copyright (c) 2010-2014 Darkstar Dev Teams
+Copyright (c) 2023-2025 Fox_Mulder (adaptation Xbox 360)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -16,7 +17,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/
 
-This file is part of DarkStar-server source code.
+This file is part of DarkStar-server source code, adapted for Xbox 360.
 
 ===========================================================================
 */
@@ -24,24 +25,8 @@ This file is part of DarkStar-server source code.
 #ifndef __XILOADER_NETWORK_H_INCLUDED__
 #define __XILOADER_NETWORK_H_INCLUDED__
 
-#if defined (_MSC_VER) && (_MSC_VER >= 1020)
-#pragma once
-#endif
-
-#include <winsock2.h>
-#include <ws2tcpip.h>
-#include <windows.h>
+#include <xtl.h>
 #include <string>
-#include <conio.h>
-
-#include "console.h"
-
-#include "mbedtls/net_sockets.h"
-#include "mbedtls/debug.h"
-#include "mbedtls/ssl.h"
-#include "mbedtls/entropy.h"
-#include "mbedtls/ctr_drbg.h"
-#include "mbedtls/error.h"
 
 namespace xiloader
 {
@@ -50,8 +35,7 @@ namespace xiloader
      */
     typedef struct datasocket_t
     {
-        datasocket_t() : s(INVALID_SOCKET), AccountId(0), LocalAddress((ULONG)-1), ServerAddress((ULONG)-1)
-        {}
+        datasocket_t() : s(INVALID_SOCKET), AccountId(0), LocalAddress((ULONG)-1), ServerAddress((ULONG)-1) {}
 
         SOCKET s;
         UINT32 AccountId;
@@ -93,7 +77,6 @@ namespace xiloader
          * @return True on success, false otherwise.
          */
         static bool CreateConnection(datasocket* sock, const char* port);
-
 
         /**
          * @brief Creates a connection to the auth server on the given port.

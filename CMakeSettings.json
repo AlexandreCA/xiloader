@@ -1,20 +1,41 @@
-﻿{
+{
+  "//": [
+    "Copyright (c) 2010-2014 Darkstar Dev Teams",
+    "Copyright (c) 2023-2025 Fox_Mulder (adaptation Xbox 360)",
+    "This program is free software: you can redistribute it and/or modify",
+    "it under the terms of the GNU General Public License as published by",
+    "the Free Software Foundation, either version 3 of the License, or",
+    "(at your option) any later version.",
+    "This file is part of DarkStar-server source code, adapted for Xbox 360."
+  ],
   "configurations": [
     {
       "name": "Debug",
-      "generator": "Ninja",
+      "generator": "Visual Studio 16 2019",
       "configurationType": "Debug",
-      "inheritEnvironments": [ "msvc_x86" ],
-      "buildRoot": "${projectDir}\\build\\${name}",
-      "installRoot": "${projectDir}\\build\\${name}"
+      "inheritEnvironments": [ "v141_xbox" ],
+      "buildRoot": "${projectDir}/build/${name}",
+      "installRoot": "${projectDir}/build/${name}",
+      "architecture": "Xbox360",
+      "environmentVariables": {
+        "XDK_PATH": "C:/Program Files/Microsoft Xbox 360 SDK",
+        "INCLUDE": "${env.XDK_PATH}/include",
+        "LIB": "${env.XDK_PATH}/lib"
+      }
     },
     {
       "name": "Release",
-      "generator": "Ninja",
+      "generator": "Visual Studio 16 2019",
       "configurationType": "Release",
-      "inheritEnvironments": [ "msvc_x86" ],
-      "buildRoot": "${projectDir}\\build\\${name}",
-      "installRoot": "${projectDir}\\build\\${name}"
+      "inheritEnvironments": [ "v141_xbox" ],
+      "buildRoot": "${projectDir}/build/${name}",
+      "installRoot": "${projectDir}/build/${name}",
+      "architecture": "Xbox360",
+      "environmentVariables": {
+        "XDK_PATH": "C:/Program Files/Microsoft Xbox 360 SDK",
+        "INCLUDE": "${env.XDK_PATH}/include",
+        "LIB": "${env.XDK_PATH}/lib"
+      }
     }
   ]
 }

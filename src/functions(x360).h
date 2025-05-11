@@ -2,6 +2,7 @@
 ===========================================================================
 
 Copyright (c) 2010-2014 Darkstar Dev Teams
+Copyright (c) 2023-2025 Fox_Mulder (adaptation Xbox 360)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -16,7 +17,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/
 
-This file is part of DarkStar-server source code.
+This file is part of DarkStar-server source code, adapted for Xbox 360.
 
 ===========================================================================
 */
@@ -24,16 +25,8 @@ This file is part of DarkStar-server source code.
 #ifndef __XILOADER_FUNCTIONS_H_INCLUDED__
 #define __XILOADER_FUNCTIONS_H_INCLUDED__
 
-#if defined (_MSC_VER) && (_MSC_VER >= 1020)
-#pragma once
-#endif
-
-#include <winsock2.h>
-#include <ws2tcpip.h>
-#include <windows.h>
+#include <xtl.h>
 #include <string>
-
-#include <psapi.h>
 
 namespace xiloader
 {
@@ -56,44 +49,43 @@ namespace xiloader
     public:
 
         /**
-         * @brief Locates a signature of bytes using the given mask within the given module.
+         * @brief Locates a signature of bytes using the given mask within a memory range.
          *
-         * @param moduleName    The name of the module to scan within.
+         * @param startAddress  The starting address to begin the search.
+         * @param size          The size of the memory range to search.
          * @param lpPattern     The pattern of bytes to compare with.
          * @param pszMask       The mask to compare against.
          *
-         * @return Start address of where the pattern was found, NULL otherwise.
+         * @return Start address of where the pattern was found, 0 otherwise.
          */
-        static DWORD FindPattern(const char* moduleName, const unsigned char* lpPattern, const char* pszMask);
+        static unsigned long FindPattern(unsigned long startAddress, unsigned long size, const unsigned char* lpPattern, const char* pszMask);
 
         /**
-         * @brief Obtains the PlayOnline registry key.
-         *  "SOFTWARE\PlayOnlineXX"
+         * @brief Obtains the PlayOnline registry key equivalent for Xbox 360.
          *
-         * @param lang      The language id the loader was started with.
+         * @param lang          The language id the loader was started with.
          *
-         * @return registry pathname.
+         * @return Fixed configuration path or key name.
          */
-        static const char* GetRegistryPlayOnlineKey(int lang);
+        static std::string GetRegistryPlayOnlineKey(int lang);
 
         /**
-         * @brief Obtains the PlayOnline language id from the system registry.
+         * @brief Obtains the PlayOnline language id for Xbox 360.
          *
-         * @param lang      The language id the loader was started with.
+         * @param lang          The language id the loader was started with.
          *
-         * @return The language id from the registry, 1 otherwise.
+         * @return The language id, defaults to 1 (English) if not specified.
          */
         static int GetRegistryPlayOnlineLanguage(int lang);
 
         /**
-         * @brief Obtains the PlayOnlineViewer folder from the system registry.
-         *  "C:\Program Files\PlayOnline\PlayOnlineViewer"
+         * @brief Obtains the PlayOnline installation folder equivalent for Xbox 360.
          *
-         * @param lang      The language id the loader was started with.
+         * @param lang          The language id the loader was started with.
          *
-         * @return installation folder path.
+         * @return Fixed installation folder path (e.g., "game:\\PlayOnline").
          */
-        static const char* GetRegistryPlayOnlineInstallFolder(int lang);
+        static std::string GetRegistryPlayOnlineInstallFolder(int lang);
     };
 
 }; // namespace xiloader
