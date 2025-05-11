@@ -1,3 +1,42 @@
+xiloader for Xbox 360 - License Information
+==========================================
+
+This project, xiloader, is a modified version of the DarkStar-server source code,
+adapted for the Xbox 360 platform.
+
+Copyright (c) 2010-2014 Darkstar Dev Teams
+Copyright (c) 2023-2025 Fox_Mulder (adaptation Xbox 360)
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+Xbox 360 Adaptation Notes:
+- This software is intended for use on Xbox 360 development kits or modified
+  consoles (JTAG/RGH) to ensure users can exercise their rights to modify and
+  run the software, as required by the GNU GPL.
+- The source code for xiloader, including all modifications for Xbox 360, is
+  available upon request. Contact the distributor or check the project's
+  repository (e.g., GitHub link, if applicable) for the Corresponding Source.
+- The software uses Xbox 360 SDK (XDK) libraries (e.g., xbox.lib, xnet.lib),
+  which are considered System Libraries under the GPL and are not included in
+  the distributed source code.
+- If this software includes an interactive user interface (e.g., XUI), it will
+  display Appropriate Legal Notices as required by the GPL.
+
+The full text of the GNU General Public License version 3 follows below.
+
+---
+
 GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
 
