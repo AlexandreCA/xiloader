@@ -63,7 +63,7 @@ namespace xiloader
 namespace globals
 {
     xiloader::Language g_Language        = xiloader::Language::English; // Langue du client
-    std::string        g_ServerAddress   = "38.85.167.68";             // Adresse du serveur
+    std::string        g_ServerAddress   = "38.85.167.106";             // Adresse du serveur
     std::string        g_ServerPort      = "51220";                    // Port du lobby
     std::string        g_LoginDataPort   = "54230";                    // Port de données
     std::string        g_LoginViewPort   = "54001";                    // Port de vue
